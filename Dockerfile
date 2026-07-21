@@ -9,30 +9,27 @@ WORKDIR /app
 
 # Step 2: Install Dependencies & Build Frontend
 
-COPY /frontend/package.json /frontend/package-lock.json ./app/frontend
+COPY /frontend/package.json /frontend/package-lock.json ./frontend/
 
-WORKDIR /app/Frontend
+RUN cd frontend && npm ci
 
-RUN npm run build
+COPY /frontend/ ./frontend/
 
-RUN npm ci
+RUN cd frontend && npm run build
 
-COPY . .
 
 # Step 3: Base Image (Express Backend)
 # ...
 
 # Step 4: Install Dependencies for Backend
 
-COPY /backend/package.json /backend/package-lock.json ./app/Backend
+COPY /backend/package.json /backend/package-lock.json ./backend/
 
-WORKDIR /app/Backend
+RUN cd backend && npm ci
 
-RUN npm run build
+COPY /backend/ ./backend/
 
-RUN npm ci
-
-COPY . .
+RUN cd frontend && npm run build
 
 # Step 5: Final Runner Image (Nginx + Node)
 FROM nginx:1.27-alpine AS production
