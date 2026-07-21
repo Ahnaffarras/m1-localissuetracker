@@ -9,7 +9,9 @@ WORKDIR /app
 
 # Step 2: Install Dependencies & Build Frontend
 
-COPY /frontend/package.json /frontend/package-lock.json ./
+COPY /frontend/package.json /frontend/package-lock.json ./app/frontend
+
+WORKDIR /app/Frontend
 
 RUN npm run build
 
@@ -21,7 +23,10 @@ COPY . .
 # ...
 
 # Step 4: Install Dependencies for Backend
-COPY /backend/package.json /backend/package-lock.json ./
+
+COPY /backend/package.json /backend/package-lock.json ./app/Backend
+
+WORKDIR /app/Backend
 
 RUN npm run build
 
