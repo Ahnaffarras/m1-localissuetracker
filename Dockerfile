@@ -23,7 +23,7 @@ RUN cd frontend && npm run build
 
 # Step 4: Install Dependencies for Backend
 
-COPY /backend/package.json /backend/package-lock.json ./backend/
+COPY /backend/package.json ./backend/
 
 RUN cd backend && npm ci
 
