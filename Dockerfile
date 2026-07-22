@@ -19,7 +19,6 @@ RUN cd frontend && npm run build
 
 
 # Step 3: Base Image (Express Backend)
-# ...
 
 # Step 4: Install Dependencies for Backend
 
@@ -29,11 +28,14 @@ RUN cd backend && npm install
 
 COPY /backend/ ./backend/
 
+CMD ["npm", "start"]
+
+
+# RUN cd backend && npm run build
 
 # Step 5: Final Runner Image (Nginx + Node)
 FROM nginx:1.27-alpine AS production
 
-RUN cd backend && npm run build
 # Remove default nginx config and content
 RUN rm -rf /etc/nginx/conf.d/default.conf \
            /usr/share/nginx/html/*
