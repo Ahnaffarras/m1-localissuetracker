@@ -25,7 +25,7 @@ RUN cd frontend && npm run build
 
 COPY /backend/package.json ./backend/
 
-RUN cd backend && npm ci
+RUN cd backend && npm install
 
 COPY /backend/ ./backend/
 
