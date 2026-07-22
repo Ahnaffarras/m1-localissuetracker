@@ -29,7 +29,7 @@ RUN cd backend && npm ci
 
 COPY /backend/ ./backend/
 
-RUN cd frontend && npm run build
+RUN cd backend && npm run build
 
 # Step 5: Final Runner Image (Nginx + Node)
 FROM nginx:1.27-alpine AS production
