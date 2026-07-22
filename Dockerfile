@@ -39,7 +39,7 @@ RUN rm -rf /etc/nginx/conf.d/default.conf \
            /usr/share/nginx/html/*
 
 # Copy custom nginx config
-COPY nginx/nginx.conf /etc/nginx/conf.d/app.conf
+COPY nginx/default.conf /etc/nginx/conf.d/app.conf
 
 # Copy minified assets from builder
 COPY --from=build /app/dist /usr/share/nginx/html
