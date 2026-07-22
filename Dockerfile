@@ -29,13 +29,11 @@ RUN cd backend && npm install
 
 COPY /backend/ ./backend/
 
-RUN cd backend && npm run build
-
-RUN docker --debug
 
 # Step 5: Final Runner Image (Nginx + Node)
 FROM nginx:1.27-alpine AS production
 
+RUN cd backend && npm run build
 # Remove default nginx config and content
 RUN rm -rf /etc/nginx/conf.d/default.conf \
            /usr/share/nginx/html/*
