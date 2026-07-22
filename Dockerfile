@@ -9,7 +9,7 @@ WORKDIR /app
 
 # Step 2: Install Dependencies & Build Frontend
 
-COPY /frontend/package.json /frontend/package-lock.json ./frontend/
+COPY /frontend/package.json ./frontend/
 
 RUN cd frontend && npm ci
 
