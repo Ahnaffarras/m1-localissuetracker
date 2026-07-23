@@ -48,7 +48,7 @@ COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 WORKDIR /app/backend
 COPY --from=backend-build /app/backend ./
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY default.conf /etc/nginx/conf.d/default.conf
 
 COPY  docker-entrypoint.sh /docker-entrypoint.sh
 
