@@ -34,7 +34,7 @@ CMD ["npm", "start"]
 # RUN cd backend && npm run build
 
 # Step 5: Final Runner Image (Nginx + Node)
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.27-alpine AS build
 
 # Remove default nginx config and content
 RUN rm -rf /etc/nginx/conf.d/default.conf \
