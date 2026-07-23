@@ -46,9 +46,10 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
 WORKDIR /app/backend
+
 COPY --from=backend-build /app/backend ./
 
-COPY default.conf /etc/nginx/conf.d/default.conf
+COPY ../nginx/default.conf /etc/nginx/conf.d/default.conf
 
 COPY  docker-entrypoint.sh /docker-entrypoint.sh
 
