@@ -11,7 +11,7 @@ WORKDIR /app/frontend
 
 COPY /frontend/package.json ./
 
-RUN npm ci
+RUN npm install
 
 COPY /frontend/ ./
 
@@ -27,7 +27,7 @@ WORKDIR /app/backend
 COPY /backend/package*.json ./
 
 # Step 4: Install Dependencies for Backend
-RUN npm ci
+RUN npm install
 
 COPY /backend/ ./
 
