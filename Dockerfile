@@ -36,11 +36,7 @@ COPY /backend/ ./
 FROM nginx:1.25-alpine as production
 
 # Copy
-# COPY --from=frontend-build /usr/local/bin/node /usr/local/bin/node
 
-# COPY --from=frontend-build /usr/local/lib/node_modules /usr/local/lib/node_modules
-
-# RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 RUN apk add --no-cache nodejs npm
 
