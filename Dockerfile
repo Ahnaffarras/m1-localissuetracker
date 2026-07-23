@@ -55,6 +55,7 @@ COPY  docker-entrypoint.sh /docker-entrypoint.sh
 
 RUN chmod +x /docker-entrypoint.sh
 
+
 # Step 6: Expose Port & Command
 EXPOSE 80
 
