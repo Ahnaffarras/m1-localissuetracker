@@ -43,7 +43,7 @@ COPY --from=frontend-build /usr/local/lib/node_modules /usr/local/lib/node_modul
 RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
 
-COPY --from=build /app/frontend/dist /usr/share/nginx/html
+COPY --from=frontend-build /app/frontend/dist /usr/share/nginx/html
 
 WORKDIR /app/backend
 COPY --from=backend-build /app/backend ./
