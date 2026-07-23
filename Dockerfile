@@ -24,7 +24,7 @@ FROM node:23-alpine as backend-build
 
 WORKDIR /app/backend
 
-COPY /backend/package.json ./
+COPY /backend/package*.json ./
 
 # Step 4: Install Dependencies for Backend
 RUN npm ci
