@@ -15,7 +15,7 @@ RUN cd frontend && npm install
 
 COPY /frontend/ ./frontend/
 
-RUN cd frontend && npm run build
+RUN cd frontend && npm build
 
 
 # Step 3: Base Image (Express Backend)
