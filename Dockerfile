@@ -44,7 +44,7 @@ RUN rm -rf /etc/nginx/conf.d/default.conf \
 COPY nginx/default.conf /etc/nginx/conf.d/app.conf
 
 # Copy minified assets from builder
-COPY --from=build /app/frontend/frontend /usr/share/nginx/html
+COPY --from=build /app/frontend /usr/share/nginx/html
 
 # Non-root user for security
 RUN addgroup -g 1001 -S appgroup && \
