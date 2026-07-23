@@ -18,20 +18,32 @@ const pool = new Pool({
 });
 
 async function db_init() {
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS reports (
-        id SERIAL PRIMARY KEY,
-        reporter_name VARCHAR(100) NOT NULL,
-        description TEXT NOT NULL,
-        photo_key VARCHAR(255) NOT NULL,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      );
-      CREATE INDEX IF NOT EXISTS idx_reports_id ON reports(id DESC);
-    `);
-    console.log('Database initialized successfully.');
-  } catch (error) {
-    console.error('Error initializing database:', error);
+  const maxRetries = 5;
+  const retryDelay = 3000; // 3 seconds
+  
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS reports (
+          id SERIAL PRIMARY KEY,
+          reporter_name VARCHAR(100) NOT NULL,
+          description TEXT NOT NULL,
+          photo_key VARCHAR(255) NOT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        CREATE INDEX IF NOT EXISTS idx_reports_id ON reports(id DESC);
+      `);
+      console.log('Database initialized successfully.');
+      return;
+    } catch (error) {
+      console.error(`Database initialization attempt ${i + 1}/${maxRetries} failed:`, error.message);
+      if (i < maxRetries - 1) {
+        console.log(`Retrying in ${retryDelay/1000} seconds...`);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+      } else {
+        console.error('Database initialization failed after all retries. Server will continue but may not function properly.');
+      }
+    }
   }
 }
 
@@ -100,6 +112,15 @@ async function sendWebhook(isError, data) {
     } catch (e) { console.error('Telegram webhook error', e); }
   }
 }
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({ 
+    success: true, 
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // API
 app.post('/api/report', upload.single('photo'), async (req, res) => {
@@ -185,7 +206,8 @@ app.get('/api/image/:key', async (req, res) => {
   }
 });
 
-app.listen(port, async () => {
-  console.log(`Server running on port ${port}`);
+// Start server on 0.0.0.0 to accept connections from nginx
+app.listen(port, '0.0.0.0', async () => {
+  console.log(`Server running on 0.0.0.0:${port}`);
   await db_init();
 });
