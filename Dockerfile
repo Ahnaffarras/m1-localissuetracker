@@ -3,61 +3,58 @@
 # ==========================================
 
 # Step 1: Base Image (Vite Frontend Build)
-FROM node:23-alpine as build
-WORKDIR /app
+FROM node:23-alpine as frontend-build
+WORKDIR /app/frontend
 
 
 # Step 2: Install Dependencies & Build Frontend
 
-COPY /frontend/package.json ./frontend/
+COPY /frontend/package.json ./
 
-RUN cd frontend && npm install
+RUN npm ci
 
-COPY /frontend/ ./frontend/
+COPY /frontend/ ./
 
-RUN cd frontend && npm run build
+RUN npm run build
 
 
 # Step 3: Base Image (Express Backend)
 
+FROM node:23-alpine as backend-build
+
+WORKDIR /app/backend
+
+COPY /backend/package.json ./
+
 # Step 4: Install Dependencies for Backend
+RUN npm ci
 
-COPY /backend/package.json ./backend/
+COPY /backend/ ./
 
-RUN cd backend && npm install
-
-COPY /backend/ ./backend/
-
-CMD ["npm", "start"]
-
-
-# RUN cd backend && npm run build
 
 # Step 5: Final Runner Image (Nginx + Node)
-FROM nginx:1.27-alpine AS production
+FROM nginx:1.25-alpine as production
 
-# Remove default nginx config and content
-RUN rm -rf /etc/nginx/conf.d/default.conf \
-           /usr/share/nginx/html/*
+# Copy
+COPY --from=frontend-build /usr/local/bin/node /usr/local/bin/node
 
-# Copy custom nginx config
-COPY nginx/default.conf /etc/nginx/conf.d/app.conf
+COPY --from=frontend-build /usr/local/lib/node_modules /usr/local/lib/node_modules
 
-# Copy minified assets from builder
-COPY --from=build /app/frontend /usr/share/nginx/html
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm
 
-# Non-root user for security
-RUN addgroup -g 1001 -S appgroup && \
-    adduser  -u 1001 -S appuser -G appgroup && \
-    chown -R appuser:appgroup /var/cache/nginx \
-                              /var/log/nginx \
-                              /etc/nginx/conf.d && \
-    touch /var/run/nginx.pid && \
-    chown appuser:appgroup /var/run/nginx.pid
 
-USER appuser
+COPY --from=build /app/frontend/dist /usr/share/nginx/html
 
-EXPOSE 80
+WORKDIR /app/backend
+COPY --from=backend-build /app/backend ./
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+COPY  docker-entrypoint.sh /docker-entrypoint.sh
+
+RUN chmod +x /docker-entrypoint.sh
 
 # Step 6: Expose Port & Command
-# ...
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
