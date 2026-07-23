@@ -12,10 +12,10 @@ WORKDIR /app
 COPY /frontend/package.json ./frontend/
 
 RUN cd frontend && npm install
-RUN cd frontend && npm run build
 
 COPY /frontend/ ./frontend/
 
+RUN cd frontend && npm run build
 
 
 # Step 3: Base Image (Express Backend)
